@@ -6,5 +6,7 @@ func main() {
 	// TryBlockingChannel()
 	// TryFibonacci()
 	// TrySelect()
-	TrySelect3()
+	// TrySelect3()
+	// TryBinaryTree()
+	TryMutex()
 }
