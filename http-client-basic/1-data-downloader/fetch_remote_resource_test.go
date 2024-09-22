@@ -27,3 +27,6 @@ func TestFetchRemoteResource(t *testing.T) {
 		t.Errorf("Expected %q, got %q", expected, string(body))
 	}
 }
+
+// go test -v
+// go test -v -run TestFetchRemoteResource
