@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Stream</title>
+</head>
+<body>
+    <button id="start">Start Sending JSON Stream</button>
+    <script>
+        document.getElementById('start').addEventListener('click', () => {
+            // const url = 'http://localhost:8080/decode';
+            const url = '/decode';
+            const stream = new ReadableStream({
+                start(controller) {
+                    let count = 0;
+                    function push() {
+                        if (count < 10) { // 发送 10 条数据作为示例
+                            const logLine = {
+                                UserIP: '192.168.1.1',
+                                Event: `Event number ${count}`
+                            };
+                            controller.enqueue(new TextEncoder().encode(JSON.stringify(logLine) + '\n'));
+                            count++;
+                            setTimeout(push, 1000); // 每秒发送一条数据
+                        } else {
+                            controller.close();
+                        }
+                    }
+                    push();
+                }
+            });
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: stream,
+                duplex: 'half'
+            }).then(response => {
+                if (response.ok) {
+                    console.log('Stream sent successfully');
+                } else {
+                    console.error('Failed to send stream');
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
